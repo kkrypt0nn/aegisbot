@@ -1,0 +1,49 @@
+# Project specific auto-labeler
+
+area/meta:
+  - changed-files:
+      - any-glob-to-any-file:
+          - CODE_OF_CONDUCT.md
+          - CONTRIBUTING.md
+          - LICENSE.md
+
+area/docs:
+  - changed-files:
+      - any-glob-to-any-file:
+          - README.md
+
+area/github:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**/*
+
+area/community-rules:
+  - changed-files:
+      - any-glob-to-any-file:
+          - community_rules/**/*
+
+area/bot:
+  - changed-files:
+      - any-glob-to-any-file:
+          - actions/**/*
+          - rules/**/*
+          - main.go
+
+area/docker:
+  - changed-files:
+      - any-glob-to-any-file:
+          - Dockerfile
+          - docker-compose.yml
+
+area/dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - go.mod
+          - go.sum
+          - cdk8s/go.mod
+          - cdk8s/go.sum
+
+area/k8s:
+  - changed-files:
+      - any-glob-to-any-file:
+          - cdk8s/**/*

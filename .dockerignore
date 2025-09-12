@@ -1,0 +1,6 @@
+/.git
+/.github
+/cdk8s
+/dist
+Dockerfile
+renovate.json
