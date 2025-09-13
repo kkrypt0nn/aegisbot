@@ -63,6 +63,7 @@ Currently a rule may look like
     meta:
       action: "alert"
       context: "message"
+      ignoreBots: true
     strings:
       - name: "link"
         value: "https://badsite.com"

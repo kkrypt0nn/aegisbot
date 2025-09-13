@@ -23,7 +23,8 @@ const (
 
 type Member struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	Bot           bool                   `protobuf:"varint,2,opt,name=bot,proto3" json:"bot,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -58,20 +59,28 @@ func (*Member) Descriptor() ([]byte, []int) {
 	return file_proto_member_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Member) GetName() string {
+func (x *Member) GetUsername() string {
 	if x != nil {
-		return x.Name
+		return x.Username
 	}
 	return ""
+}
+
+func (x *Member) GetBot() bool {
+	if x != nil {
+		return x.Bot
+	}
+	return false
 }
 
 var File_proto_member_proto protoreflect.FileDescriptor
 
 const file_proto_member_proto_rawDesc = "" +
 	"\n" +
-	"\x12proto/member.proto\x12\x05proto\"\x1c\n" +
-	"\x06Member\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04nameB+Z)github.com/kkrypt0nn/aegisbot/proto;protob\x06proto3"
+	"\x12proto/member.proto\x12\x05proto\"6\n" +
+	"\x06Member\x12\x1a\n" +
+	"\busername\x18\x01 \x01(\tR\busername\x12\x10\n" +
+	"\x03bot\x18\x02 \x01(\bR\x03botB+Z)github.com/kkrypt0nn/aegisbot/proto;protob\x06proto3"
 
 var (
 	file_proto_member_proto_rawDescOnce sync.Once

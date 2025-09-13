@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/disgoorg/disgo"
 	"github.com/disgoorg/disgo/bot"
-	"github.com/disgoorg/disgo/events"
 	"github.com/disgoorg/disgo/gateway"
 	"github.com/fsnotify/fsnotify"
 	"github.com/joho/godotenv"
@@ -20,23 +20,13 @@ import (
 
 type Bot struct {
 	Client bot.Client
+	Config *Config
 	Rules  []*rules.SimplifiedRule
 }
 
-func (b *Bot) handleMessage(e *events.MessageCreate) {
-	if e.Message.Author.Bot {
-		return
-	}
-
-	for _, rule := range b.Rules {
-		rule.EvaluateMessage(e)
-	}
-}
-
-func (b *Bot) handleMemberUpdate(e *events.GuildMemberUpdate) {
-	for _, rule := range b.Rules {
-		rule.EvaluateMember(e)
-	}
+type Config struct {
+	IgnoreBots  bool
+	RulesFolder string
 }
 
 func main() {
@@ -44,7 +34,15 @@ func main() {
 
 	token := os.Getenv("BOT_TOKEN")
 
-	yarabotBot := &Bot{}
+	config := &Config{}
+	yarabotBot := &Bot{
+		Config: config,
+	}
+
+	ignoreBots := os.Getenv("IGNORE_BOTS")
+	if strings.ToLower(ignoreBots) == "true" {
+		config.IgnoreBots = true
+	}
 
 	client, err := disgo.New(token, bot.WithGatewayConfigOpts(
 		gateway.WithIntents(
@@ -62,6 +60,7 @@ func main() {
 	yarabotBot.Client = client
 
 	rulesFolder := "_rules/"
+	config.RulesFolder = rulesFolder
 
 	loadedRules, err := rules.Load(rulesFolder)
 	if err != nil {

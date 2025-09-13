@@ -25,8 +25,9 @@ type YAMLRule struct {
 }
 
 type RuleMeta struct {
-	Action  string `yaml:"action"`
-	Context string `yaml:"context"`
+	Action     string `yaml:"action"`
+	Context    string `yaml:"context"`
+	IgnoreBots bool   `yaml:"ignoreBots"`
 }
 
 type RuleString struct {
@@ -38,9 +39,14 @@ type SimplifiedRule struct {
 	Name       string
 	Action     string
 	Context    string
+	IgnoreBots bool
 	Strings    map[string]RuleString
 	Expression string
 	Program    cel.Program
+}
+
+func (r *SimplifiedRule) returnIfBot(bot bool) bool {
+	return r.IgnoreBots && bot
 }
 
 type Context struct {
@@ -71,6 +77,8 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 		}
 
 		var celVars []cel.EnvOption
+
+		// Add the variables depending on the context
 		switch yamlRule.Rule.Meta.Context {
 		case "message":
 			celVars = append(celVars,
@@ -86,9 +94,13 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 			return nil, fmt.Errorf("unsupported rule context: %s", yamlRule.Rule.Meta.Context)
 		}
 
+		// Add the strings defined in the rule
 		for _, s := range yamlRule.Rule.Strings {
 			celVars = append(celVars, cel.Constant(s.Name, cel.StringType, types.String(s.Value)))
 		}
+
+		// Add the custom functions for either the types or as a global function
+		celVars = append(celVars, cel.Function("isBot", isBotOverload))
 
 		env, err := cel.NewEnv(celVars...)
 		if err != nil {
@@ -103,11 +115,11 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 		if err != nil {
 			return nil, err
 		}
-
 		rule := &SimplifiedRule{
 			Name:       yamlRule.Rule.Name,
 			Action:     yamlRule.Rule.Meta.Action,
 			Context:    yamlRule.Rule.Meta.Context,
+			IgnoreBots: yamlRule.Rule.Meta.IgnoreBots,
 			Strings:    stringsMap,
 			Expression: condition,
 			Program:    program,
@@ -175,16 +187,17 @@ func (r *SimplifiedRule) Evaluate(ctx *Context) (bool, error) {
 }
 
 func (r *SimplifiedRule) EvaluateMessage(e *events.MessageCreate) bool {
-	if r.Context != "message" {
-		return false
-	}
-	if e.Message.Author.Bot {
+	if r.Context != "message" || r.returnIfBot(e.Message.Author.Bot) {
 		return false
 	}
 
 	ok, err := r.Evaluate(&Context{
 		Message: &proto.Message{
 			Content: e.Message.Content,
+			Author: &proto.Member{
+				Username: e.Message.Author.Username,
+				Bot:      e.Message.Author.Bot,
+			},
 		},
 	})
 	if err != nil || !ok {
@@ -204,13 +217,14 @@ func (r *SimplifiedRule) EvaluateMessage(e *events.MessageCreate) bool {
 }
 
 func (r *SimplifiedRule) EvaluateMember(e *events.GuildMemberUpdate) bool {
-	if r.Context != "member" {
+	if r.Context != "member" || r.returnIfBot(e.Member.User.Bot) {
 		return false
 	}
 
 	ok, err := r.Evaluate(&Context{
 		Member: &proto.Member{
-			Name: *e.Member.Nick,
+			Username: e.Member.User.Username,
+			Bot:      e.Member.User.Bot,
 		},
 	})
 	if err != nil || !ok {
@@ -220,7 +234,8 @@ func (r *SimplifiedRule) EvaluateMember(e *events.GuildMemberUpdate) bool {
 	log.Info(fmt.Sprintf("Rule %s matched for user %s", r.Name, e.Member.User.Username))
 
 	actions.Execute(r.Action, e.Client().Rest(), &actions.Context{
-		GuildID:   e.GuildID.String(),
+		GuildID: e.GuildID.String(),
+		// Yes, this is hard-coded and for now and I'm fine with it...
 		ChannelID: "1397277714192531707",
 		UserID:    e.Member.User.ID.String(),
 		MessageID: "",

@@ -1,9 +1,9 @@
 syntax = "proto3";
+option go_package = "github.com/kkrypt0nn/aegisbot/proto;proto";
 
 package proto;
 
-option go_package = "github.com/kkrypt0nn/aegisbot/proto;proto";
-
 message Member {
-  string name = 1;
+  string username = 1;
+  bool bot = 2;
 }

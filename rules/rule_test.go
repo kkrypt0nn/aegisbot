@@ -37,6 +37,7 @@ func TestParseRulePhishingLinkYAML(t *testing.T) {
     meta:
       action: "alert"
       context: "message"
+      ignoreBots: true
     strings:
       - name: "link"
         value: "https://badsite.com"
@@ -68,6 +69,10 @@ func TestParseRulePhishingLinkYAML(t *testing.T) {
 
 	if rule.Context != "message" {
 		t.Errorf("expected context 'message', got '%s'", rule.Action)
+	}
+
+	if rule.IgnoreBots != true {
+		t.Errorf("expected ignoreBots 'true', got '%v'", rule.IgnoreBots)
 	}
 
 	if len(rule.Strings) != 2 {

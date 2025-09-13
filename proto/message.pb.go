@@ -24,6 +24,7 @@ const (
 type Message struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Content       string                 `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
+	Author        *Member                `protobuf:"bytes,2,opt,name=author,proto3" json:"author,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -65,13 +66,21 @@ func (x *Message) GetContent() string {
 	return ""
 }
 
+func (x *Message) GetAuthor() *Member {
+	if x != nil {
+		return x.Author
+	}
+	return nil
+}
+
 var File_proto_message_proto protoreflect.FileDescriptor
 
 const file_proto_message_proto_rawDesc = "" +
 	"\n" +
-	"\x13proto/message.proto\x12\x05proto\"#\n" +
+	"\x13proto/message.proto\x12\x05proto\x1a\x12proto/member.proto\"J\n" +
 	"\aMessage\x12\x18\n" +
-	"\acontent\x18\x01 \x01(\tR\acontentB+Z)github.com/kkrypt0nn/aegisbot/proto;protob\x06proto3"
+	"\acontent\x18\x01 \x01(\tR\acontent\x12%\n" +
+	"\x06author\x18\x02 \x01(\v2\r.proto.MemberR\x06authorB+Z)github.com/kkrypt0nn/aegisbot/proto;protob\x06proto3"
 
 var (
 	file_proto_message_proto_rawDescOnce sync.Once
@@ -88,13 +97,15 @@ func file_proto_message_proto_rawDescGZIP() []byte {
 var file_proto_message_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_proto_message_proto_goTypes = []any{
 	(*Message)(nil), // 0: proto.Message
+	(*Member)(nil),  // 1: proto.Member
 }
 var file_proto_message_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: proto.Message.author:type_name -> proto.Member
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_proto_message_proto_init() }
@@ -102,6 +113,7 @@ func file_proto_message_proto_init() {
 	if File_proto_message_proto != nil {
 		return
 	}
+	file_proto_member_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
