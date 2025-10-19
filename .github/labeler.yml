@@ -40,10 +40,8 @@ area/dependencies:
       - any-glob-to-any-file:
           - go.mod
           - go.sum
-          - cdk8s/go.mod
-          - cdk8s/go.sum
 
 area/k8s:
   - changed-files:
       - any-glob-to-any-file:
-          - cdk8s/**/*
+          - k8s/**/*

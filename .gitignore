@@ -24,9 +24,8 @@ go.work.sum
 # env file
 .env
 
-# dist folder, but not cdk8s/dist
+# dist folder
 dist/
-!cdk8s/dist/
 
 # macOS
 .DS_Store

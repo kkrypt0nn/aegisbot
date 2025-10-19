@@ -24,28 +24,9 @@ jobs:
           version: latest
       - name: Test
         run: go test -v ./...
-  cdk8s_synth:
-    name: cdk8s synth
-    runs-on: ubuntu-latest
-    needs: [lint_test]
-    defaults:
-      run:
-        working-directory: ./cdk8s
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
-        with:
-          node-version: 24.5.0
-      - name: Install cdk8s
-        run: npm install -g cdk8s-cli
-      - name: Run cdk8s synth
-        run: cdk8s synth
   build:
     name: Build for ${{ matrix.target.goos }}/${{ matrix.target.goarch }}
     runs-on: ubuntu-latest
-    needs: [cdk8s_synth]
     strategy:
       matrix:
         target:
