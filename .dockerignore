@@ -4,3 +4,4 @@
 /dist
 Dockerfile
 renovate.json
+/website

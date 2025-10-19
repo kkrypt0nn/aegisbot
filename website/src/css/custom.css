@@ -1,0 +1,23 @@
+/* Fix announcement close button color */
+[class^="theme-announcement-bar"] .close {
+  color: var(--ifm-font-color-base) !important;
+  opacity: 1;
+}
+
+/* Fix cards having weird background color */
+.card {
+  background-color: transparent;
+}
+
+.header-github-link:hover {
+  opacity: 0.6;
+}
+
+.header-github-link:before {
+  mask-image: url(/svgs/github.svg);
+  background-color: var(--ifm-font-color-base);
+  content: "";
+  display: flex;
+  height: 24px;
+  width: 24px;
+}
