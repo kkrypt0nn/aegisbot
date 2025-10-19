@@ -10,7 +10,7 @@ require (
 	github.com/google/cel-go v0.26.1
 	github.com/joho/godotenv v1.5.1
 	github.com/kkrypt0nn/tangra v1.1.0
-	google.golang.org/protobuf v1.34.2
+	google.golang.org/protobuf v1.36.10
 	sigs.k8s.io/yaml v1.6.0
 )
 
