@@ -5,6 +5,7 @@ go 1.24.9
 require (
 	github.com/disgoorg/disgo v0.18.16
 	github.com/disgoorg/json v1.2.0
+	github.com/disgoorg/json/v2 v2.0.0
 	github.com/disgoorg/snowflake/v2 v2.0.3
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/google/cel-go v0.26.1
