@@ -6,21 +6,22 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/disgoorg/disgo/events"
 	"github.com/google/cel-go/cel"
 	"github.com/google/cel-go/common/types"
-	"github.com/kkrypt0nn/aegisbot/actions"
-	"github.com/kkrypt0nn/aegisbot/log"
+	"github.com/kkrypt0nn/aegisbot/internal/event"
 	"github.com/kkrypt0nn/aegisbot/proto"
 	"sigs.k8s.io/yaml"
 )
 
 type YAMLRule struct {
 	Rule struct {
-		Name       string       `yaml:"name"`
-		Meta       RuleMeta     `yaml:"meta"`
-		Strings    []RuleString `yaml:"strings"`
-		Expression string       `yaml:"expression"`
+		Name          string       `yaml:"name"`
+		Meta          RuleMeta     `yaml:"meta"`
+		Strings       []RuleString `yaml:"strings"`
+		Expression    string       `yaml:"expression"`
+		AlertTemplate string       `yaml:"alertTemplate"`
+		BanTemplate   string       `yaml:"banTemplate"`
+		KickTemplate  string       `yaml:"kickTemplate"`
 	} `yaml:"rule"`
 }
 
@@ -40,18 +41,13 @@ type SimplifiedRule struct {
 	Action     string
 	Context    string
 	IgnoreBots bool
-	Strings    map[string]RuleString
-	Expression string
-	Program    cel.Program
-}
 
-func (r *SimplifiedRule) returnIfBot(bot bool) bool {
-	return r.IgnoreBots && bot
-}
+	Strings map[string]RuleString
+	Program cel.Program
 
-type Context struct {
-	Message *proto.Message
-	Member  *proto.Member
+	AlertTemplate string
+	BanTemplate   string
+	KickTemplate  string
 }
 
 func Parse(filePath string) ([]*SimplifiedRule, error) {
@@ -70,10 +66,7 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 	for _, yamlRule := range yamlRules {
 		stringsMap := make(map[string]RuleString)
 		for _, s := range yamlRule.Rule.Strings {
-			stringsMap[s.Name] = RuleString{
-				Name:  s.Name,
-				Value: s.Value,
-			}
+			stringsMap[s.Name] = s
 		}
 
 		var celVars []cel.EnvOption
@@ -101,28 +94,36 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 
 		// Add the custom functions for either the types or as a global function
 		celVars = append(celVars, cel.Function("isBot", isBotOverload))
+		celVars = append(celVars, cel.Function("hasLinks", messageHasLinks))
+		celVars = append(celVars, cel.Function("getLinks", messageGetLinks))
 
 		env, err := cel.NewEnv(celVars...)
 		if err != nil {
 			return nil, err
 		}
-		condition := strings.TrimSpace(yamlRule.Rule.Expression)
-		ast, iss := env.Compile(condition)
+
+		ast, iss := env.Compile(strings.TrimSpace(yamlRule.Rule.Expression))
 		if iss.Err() != nil {
 			return nil, iss.Err()
 		}
+
 		program, err := env.Program(ast)
 		if err != nil {
 			return nil, err
 		}
+
 		rule := &SimplifiedRule{
 			Name:       yamlRule.Rule.Name,
 			Action:     yamlRule.Rule.Meta.Action,
 			Context:    yamlRule.Rule.Meta.Context,
 			IgnoreBots: yamlRule.Rule.Meta.IgnoreBots,
-			Strings:    stringsMap,
-			Expression: condition,
-			Program:    program,
+
+			Strings: stringsMap,
+			Program: program,
+
+			AlertTemplate: yamlRule.Rule.AlertTemplate,
+			BanTemplate:   yamlRule.Rule.BanTemplate,
+			KickTemplate:  yamlRule.Rule.KickTemplate,
 		}
 		simplifiedRules = append(simplifiedRules, rule)
 	}
@@ -156,21 +157,21 @@ func Load(dir string) ([]*SimplifiedRule, error) {
 	return allRules, nil
 }
 
-func (r *SimplifiedRule) Evaluate(ctx *Context) (bool, error) {
+func (r *SimplifiedRule) Evaluate(ctx *event.Context) (bool, error) {
+	if r.Context != string(ctx.Type) {
+		return false, nil
+	}
+	if r.IgnoreBots && ctx.Member != nil && ctx.Member.Bot {
+		return false, nil
+	}
+
 	input := map[string]any{}
-	switch r.Context {
-	case "message":
-		if ctx.Message == nil {
-			return false, fmt.Errorf("no message in context")
-		}
+	switch ctx.Type {
+	case event.EventMessage:
 		input["message"] = ctx.Message
-	case "member":
-		if ctx.Member == nil {
-			return false, fmt.Errorf("no member in context")
-		}
 		input["member"] = ctx.Member
-	default:
-		return false, fmt.Errorf("unknown rule context: %s", r.Context)
+	case event.EventMember:
+		input["member"] = ctx.Member
 	}
 
 	out, _, err := r.Program.Eval(input)
@@ -184,62 +185,4 @@ func (r *SimplifiedRule) Evaluate(ctx *Context) (bool, error) {
 	}
 
 	return result, nil
-}
-
-func (r *SimplifiedRule) EvaluateMessage(e *events.MessageCreate) bool {
-	if r.Context != "message" || r.returnIfBot(e.Message.Author.Bot) {
-		return false
-	}
-
-	ok, err := r.Evaluate(&Context{
-		Message: &proto.Message{
-			Content: e.Message.Content,
-			Author: &proto.Member{
-				Username: e.Message.Author.Username,
-				Bot:      e.Message.Author.Bot,
-			},
-		},
-	})
-	if err != nil || !ok {
-		return false
-	}
-
-	log.Info(fmt.Sprintf("Rule %s matched for user %s", r.Name, e.Message.Author.Username))
-
-	actions.Execute(r.Action, e.Client().Rest(), &actions.Context{
-		GuildID:   e.GuildID.String(),
-		ChannelID: e.ChannelID.String(),
-		UserID:    e.Message.Author.ID.String(),
-		MessageID: e.MessageID.String(),
-	})
-
-	return true
-}
-
-func (r *SimplifiedRule) EvaluateMember(e *events.GuildMemberUpdate) bool {
-	if r.Context != "member" || r.returnIfBot(e.Member.User.Bot) {
-		return false
-	}
-
-	ok, err := r.Evaluate(&Context{
-		Member: &proto.Member{
-			Username: e.Member.User.Username,
-			Bot:      e.Member.User.Bot,
-		},
-	})
-	if err != nil || !ok {
-		return false
-	}
-
-	log.Info(fmt.Sprintf("Rule %s matched for user %s", r.Name, e.Member.User.Username))
-
-	actions.Execute(r.Action, e.Client().Rest(), &actions.Context{
-		GuildID: e.GuildID.String(),
-		// Yes, this is hard-coded and for now and I'm fine with it...
-		ChannelID: "1397277714192531707",
-		UserID:    e.Member.User.ID.String(),
-		MessageID: "",
-	})
-
-	return true
 }

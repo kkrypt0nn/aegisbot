@@ -27,7 +27,7 @@ For now, feel free to watch the repository or join the [Discord server](https://
 
 ### Prerequisites
 
-- Go ≥ 1.24
+- Go ≥ 1.25.6
 - A Discord bot token
 
 ### Run Locally
@@ -35,7 +35,7 @@ For now, feel free to watch the repository or join the [Discord server](https://
 ```bash
 git clone https://github.com/kkrypt0nn/aegisbot
 cd aegisbot
-go run .
+make run
 ```
 
 ## Features
@@ -75,18 +75,17 @@ Currently a rule may look like
 
 ## Documentation
 
-Coming soon! Once the base rule engine and at least the Discord integrations are complete, a documentation will be hosted in the `docs/` folder and on a documentation website.
+Coming soon! Once the base rule engine and at least the Discord integrations are complete, a documentation will be hosted in the `website/docs/` folder and on a documentation website.
 
 ## Troubleshooting
 
-Issues are currently **disabled** while Aegisbot is in active development and not ready for actual use.
+The project is not meant to be used in production at the moment.
 
-Once a usable version is released, the issue tracker will be opened for bug reports, feature requests, and support.
 In the meantime, feel free to join the [Discord Community](https://discord.gg/xj6y5ZaTMr) to follow development updates or ask questions.
 
 ## Contributing
 
-Contributions are more than welcome, but please wait until we release a working beta or alpha version, then the issues will also be opened.
+Contributions are more than welcome, but please wait until a `v1` is released.
 
 When it's time, please follow:
 - [Contributing Guidelines](./CONTRIBUTING.md)

@@ -13,16 +13,10 @@ import (
 	"github.com/disgoorg/disgo/gateway"
 	"github.com/fsnotify/fsnotify"
 	"github.com/joho/godotenv"
-	"github.com/kkrypt0nn/aegisbot/core"
-	"github.com/kkrypt0nn/aegisbot/log"
-	"github.com/kkrypt0nn/aegisbot/rules"
+	"github.com/kkrypt0nn/aegisbot/internal/buildinfo"
+	"github.com/kkrypt0nn/aegisbot/internal/log"
+	"github.com/kkrypt0nn/aegisbot/internal/rules"
 )
-
-type Bot struct {
-	Client bot.Client
-	Config *Config
-	Rules  []*rules.SimplifiedRule
-}
 
 type Config struct {
 	IgnoreBots  bool
@@ -119,7 +113,7 @@ func main() {
 		return
 	}
 
-	log.Success(fmt.Sprintf("%s (v%s) has successfully started", core.Name, core.Version))
+	log.Success(fmt.Sprintf("%s (v%s) has successfully started", buildinfo.Name, buildinfo.Version))
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)

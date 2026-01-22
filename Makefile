@@ -1,7 +1,7 @@
 .PHONY: build run latest proto
 
 build:
-	go build -ldflags="-s -w" -o dist/aegisbot .
+	go build -ldflags="-s -w" -o dist/aegisbot ./cmd/aegisbot
 
 run:
 	$(MAKE) build
