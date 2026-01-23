@@ -15,19 +15,16 @@ import (
 
 type YAMLRule struct {
 	Rule struct {
-		Name          string       `yaml:"name"`
-		Meta          RuleMeta     `yaml:"meta"`
-		Strings       []RuleString `yaml:"strings"`
-		Expression    string       `yaml:"expression"`
-		AlertTemplate string       `yaml:"alertTemplate"`
-		BanTemplate   string       `yaml:"banTemplate"`
-		KickTemplate  string       `yaml:"kickTemplate"`
+		Name       string       `yaml:"name"`
+		Meta       RuleMeta     `yaml:"meta"`
+		Strings    []RuleString `yaml:"strings"`
+		Expression string       `yaml:"expression"`
+		Action     RuleAction   `yaml:"action"`
 	} `yaml:"rule"`
 }
 
 type RuleMeta struct {
-	Action     string `yaml:"action"`
-	Context    string `yaml:"context"`
+	Event      string `yaml:"event"`
 	IgnoreBots bool   `yaml:"ignoreBots"`
 }
 
@@ -36,18 +33,24 @@ type RuleString struct {
 	Value string `yaml:"value"`
 }
 
+type RuleAction struct {
+	Type event.EventType `yaml:"type"`
+
+	// Optional fields depending on the action
+	MessageTemplate string `yaml:"messageTemplate,omitempty"`
+	Duration        string `yaml:"duration,omitempty"`
+	Reason          string `yaml:"reason,omitempty"`
+}
+
 type SimplifiedRule struct {
 	Name       string
-	Action     string
-	Context    string
+	Event      string
 	IgnoreBots bool
 
 	Strings map[string]RuleString
 	Program cel.Program
 
-	AlertTemplate string
-	BanTemplate   string
-	KickTemplate  string
+	Action RuleAction
 }
 
 func Parse(filePath string) ([]*SimplifiedRule, error) {
@@ -72,7 +75,7 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 		var celVars []cel.EnvOption
 
 		// Add the variables depending on the context
-		switch yamlRule.Rule.Meta.Context {
+		switch yamlRule.Rule.Meta.Event {
 		case "message":
 			celVars = append(celVars,
 				cel.Types(&proto.Message{}),
@@ -84,7 +87,7 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 				cel.Variable("member", cel.ObjectType("proto.Member")),
 			)
 		default:
-			return nil, fmt.Errorf("unsupported rule context: %s", yamlRule.Rule.Meta.Context)
+			return nil, fmt.Errorf("unsupported rule event: %s", yamlRule.Rule.Meta.Event)
 		}
 
 		// Add the strings defined in the rule
@@ -114,16 +117,12 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 
 		rule := &SimplifiedRule{
 			Name:       yamlRule.Rule.Name,
-			Action:     yamlRule.Rule.Meta.Action,
-			Context:    yamlRule.Rule.Meta.Context,
+			Event:      yamlRule.Rule.Meta.Event,
 			IgnoreBots: yamlRule.Rule.Meta.IgnoreBots,
 
 			Strings: stringsMap,
 			Program: program,
-
-			AlertTemplate: yamlRule.Rule.AlertTemplate,
-			BanTemplate:   yamlRule.Rule.BanTemplate,
-			KickTemplate:  yamlRule.Rule.KickTemplate,
+			Action:  yamlRule.Rule.Action,
 		}
 		simplifiedRules = append(simplifiedRules, rule)
 	}
@@ -158,7 +157,7 @@ func Load(dir string) ([]*SimplifiedRule, error) {
 }
 
 func (r *SimplifiedRule) Evaluate(ctx *event.Context) (bool, error) {
-	if r.Context != string(ctx.Type) {
+	if r.Event != string(ctx.Type) {
 		return false, nil
 	}
 	if r.IgnoreBots && ctx.Member != nil && ctx.Member.Bot {

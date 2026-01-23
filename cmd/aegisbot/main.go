@@ -18,18 +18,13 @@ import (
 	"github.com/kkrypt0nn/aegisbot/internal/rules"
 )
 
-type Config struct {
-	IgnoreBots  bool
-	RulesFolder string
-}
-
 func main() {
 	_ = godotenv.Load()
 
 	token := os.Getenv("BOT_TOKEN")
 
 	config := &Config{}
-	yarabotBot := &Bot{
+	aegisbot := &Bot{
 		Config: config,
 	}
 
@@ -44,14 +39,14 @@ func main() {
 			gateway.IntentMessageContent,
 			gateway.IntentGuildMembers,
 		)),
-		bot.WithEventListenerFunc(yarabotBot.handleMessage),
-		bot.WithEventListenerFunc(yarabotBot.handleMemberUpdate),
+		bot.WithEventListenerFunc(aegisbot.handleMessage),
+		bot.WithEventListenerFunc(aegisbot.handleMemberUpdate),
 	)
 	if err != nil {
 		log.Error(fmt.Sprintf("Failed creating Discord session: %s", err))
 		return
 	}
-	yarabotBot.Client = client
+	aegisbot.Client = client
 
 	rulesFolder := "_rules/"
 	config.RulesFolder = rulesFolder
@@ -62,7 +57,7 @@ func main() {
 		return
 	}
 
-	yarabotBot.Rules = loadedRules
+	aegisbot.Rules = loadedRules
 
 	go func() {
 		watcher, err := fsnotify.NewWatcher()
@@ -91,7 +86,7 @@ func main() {
 					if err != nil {
 						log.Error(fmt.Sprintf("Failed to reload rules: %s", err))
 					} else {
-						yarabotBot.Rules = updatedRules
+						aegisbot.Rules = updatedRules
 					}
 				}
 			case err, ok := <-watcher.Errors:

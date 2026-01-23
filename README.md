@@ -61,14 +61,15 @@ Currently a rule may look like
 - rule:
     name: "PhishingLink"
     meta:
-      action: "alert"
-      context: "message"
+      event: "message"
       ignoreBots: true
     strings:
       - name: "link"
         value: "https://badsite.com"
       - name: "scam"
         value: "free nitro"
+    action:
+      type: "alert"
     expression: |
       message.content.contains(link) && message.content.contains(scam)
 ```

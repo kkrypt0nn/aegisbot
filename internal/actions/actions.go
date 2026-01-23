@@ -15,17 +15,15 @@ import (
 type Input struct {
 	RuleName string
 
-	GuildID   string
-	ChannelID string
-	MessageID string
-	UserID    string
-	Duration  time.Duration
+	GuildID         string
+	ChannelID       string
+	MessageID       string
+	UserID          string
+	Duration        time.Duration
+	Reason          string
+	MessageTemplate string
 
 	Variables map[string]any
-
-	AlertTemplate string
-	BanTemplate   string
-	KickTemplate  string
 }
 
 func Execute(action string, client rest.Rest, input *Input) {
@@ -34,7 +32,7 @@ func Execute(action string, client rest.Rest, input *Input) {
 		alert(client,
 			snowflake.MustParse(input.ChannelID),
 			template.Render(
-				input.AlertTemplate,
+				input.MessageTemplate,
 				input.Variables,
 				template.DefaultAlert,
 			),
@@ -45,7 +43,7 @@ func Execute(action string, client rest.Rest, input *Input) {
 			parseSnowflakePtr(input.GuildID),
 			snowflake.MustParse(input.UserID),
 			template.Render(
-				input.BanTemplate,
+				input.Reason,
 				input.Variables,
 				template.DefaultBan,
 			),
@@ -64,7 +62,7 @@ func Execute(action string, client rest.Rest, input *Input) {
 			parseSnowflakePtr(input.GuildID),
 			snowflake.MustParse(input.UserID),
 			template.Render(
-				input.KickTemplate,
+				input.Reason,
 				input.Variables,
 				template.DefaultKick,
 			),
@@ -94,12 +92,12 @@ func alert(client rest.Rest, channelID snowflake.ID, message string) {
 	}
 }
 
-func ban(client rest.Rest, guildID *snowflake.ID, userID snowflake.ID, message string) {
+func ban(client rest.Rest, guildID *snowflake.ID, userID snowflake.ID, reason string) {
 	if guildID == nil {
 		return
 	}
 
-	err := client.AddBan(*guildID, userID, 0, rest.WithReason(message))
+	err := client.AddBan(*guildID, userID, 0, rest.WithReason(reason))
 	if err != nil {
 		log.Error(fmt.Sprintf("Failed to ban user: %v", err))
 	}
@@ -112,12 +110,12 @@ func deleteMessage(client rest.Rest, channelID, messageID snowflake.ID) {
 	}
 }
 
-func kick(client rest.Rest, guildID *snowflake.ID, userID snowflake.ID, message string) {
+func kick(client rest.Rest, guildID *snowflake.ID, userID snowflake.ID, reason string) {
 	if guildID == nil {
 		return
 	}
 
-	err := client.RemoveMember(*guildID, userID, rest.WithReason(message))
+	err := client.RemoveMember(*guildID, userID, rest.WithReason(reason))
 	if err != nil {
 		log.Error(fmt.Sprintf("Failed to kick user: %v", err))
 	}
