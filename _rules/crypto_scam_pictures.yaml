@@ -1,0 +1,16 @@
+- rule:
+    name: "CryptoScamPictures"
+    meta:
+      event: "message"
+      ignoreBots: true
+    action:
+      type: "alert"
+    expression: |
+      message.getLinks().size() == 4 &&
+      message.getLinks().all(l,
+        (
+          l.startsWith("https://cdn.discordapp.com/attachments/") ||
+          l.startsWith("https://media.discordapp.net/attachments/")
+        ) &&
+        l.matches(".*\\.(png|jpg|jpeg|gif|webp)(\\?.*)?$")
+      )

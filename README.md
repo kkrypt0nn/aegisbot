@@ -59,19 +59,21 @@ Currently a rule may look like
 
 ```yaml
 - rule:
-    name: "PhishingLink"
+    name: "CryptoScamPictures"
     meta:
       event: "message"
       ignoreBots: true
-    strings:
-      - name: "link"
-        value: "https://badsite.com"
-      - name: "scam"
-        value: "free nitro"
     action:
       type: "alert"
     expression: |
-      message.content.contains(link) && message.content.contains(scam)
+      message.getLinks().size() == 4 &&
+      message.getLinks().all(l,
+        (
+          l.startsWith("https://cdn.discordapp.com/attachments/") ||
+          l.startsWith("https://media.discordapp.net/attachments/")
+        ) &&
+        l.matches(".*\\.(png|jpg|jpeg|gif|webp)(\\?.*)?$")
+      )
 ```
 
 ## Documentation

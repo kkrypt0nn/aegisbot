@@ -51,6 +51,8 @@ type SimplifiedRule struct {
 	Program cel.Program
 
 	Action RuleAction
+
+	RawExpression string
 }
 
 func Parse(filePath string) ([]*SimplifiedRule, error) {
@@ -123,6 +125,8 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 			Strings: stringsMap,
 			Program: program,
 			Action:  yamlRule.Rule.Action,
+
+			RawExpression: yamlRule.Rule.Expression,
 		}
 		simplifiedRules = append(simplifiedRules, rule)
 	}
@@ -130,8 +134,10 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 	return simplifiedRules, nil
 }
 
-func Load(dir string) ([]*SimplifiedRule, error) {
+func Load(dir string) ([]*SimplifiedRule, map[string]*SimplifiedRule, error) {
 	var allRules []*SimplifiedRule
+	rulesByName := make(map[string]*SimplifiedRule)
+
 	err := filepath.Walk(dir, func(path string, fileInfo os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -145,15 +151,22 @@ func Load(dir string) ([]*SimplifiedRule, error) {
 		if err != nil {
 			return err
 		}
-		allRules = append(allRules, rules...)
 
+		for _, r := range rules {
+			if _, exists := rulesByName[r.Name]; exists {
+				return fmt.Errorf("duplicate rule name: %s", r.Name)
+			}
+			rulesByName[r.Name] = r
+		}
+
+		allRules = append(allRules, rules...)
 		return nil
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return allRules, nil
+	return allRules, rulesByName, nil
 }
 
 func (r *SimplifiedRule) Evaluate(ctx *event.Context) (bool, error) {

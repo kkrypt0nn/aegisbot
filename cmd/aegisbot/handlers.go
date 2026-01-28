@@ -2,9 +2,14 @@ package main
 
 import (
 	"github.com/disgoorg/disgo/events"
+	"github.com/kkrypt0nn/aegisbot/internal/commands"
 	"github.com/kkrypt0nn/aegisbot/internal/event"
 	"github.com/kkrypt0nn/aegisbot/proto"
 )
+
+func (b *Bot) handleCommand(event *events.ApplicationCommandInteractionCreate) {
+	commands.CommandsList[event.SlashCommandInteractionData().CommandName()].Handle(event, b.RulesByName)
+}
 
 func (b *Bot) handleMessage(e *events.MessageCreate) {
 	member := &proto.Member{

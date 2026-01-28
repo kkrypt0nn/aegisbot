@@ -11,9 +11,10 @@ import (
 )
 
 type Bot struct {
-	Client bot.Client
-	Config *Config
-	Rules  []*rules.SimplifiedRule
+	Client      bot.Client
+	Config      *Config
+	Rules       []*rules.SimplifiedRule
+	RulesByName map[string]*rules.SimplifiedRule
 }
 
 type Config struct {

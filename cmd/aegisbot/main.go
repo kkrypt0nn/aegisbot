@@ -14,6 +14,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/joho/godotenv"
 	"github.com/kkrypt0nn/aegisbot/internal/buildinfo"
+	"github.com/kkrypt0nn/aegisbot/internal/commands"
 	"github.com/kkrypt0nn/aegisbot/internal/log"
 	"github.com/kkrypt0nn/aegisbot/internal/rules"
 )
@@ -39,6 +40,7 @@ func main() {
 			gateway.IntentMessageContent,
 			gateway.IntentGuildMembers,
 		)),
+		bot.WithEventListenerFunc(aegisbot.handleCommand),
 		bot.WithEventListenerFunc(aegisbot.handleMessage),
 		bot.WithEventListenerFunc(aegisbot.handleMemberUpdate),
 	)
@@ -48,16 +50,22 @@ func main() {
 	}
 	aegisbot.Client = client
 
+	// TODO: Make this check for commands before, like I did in my personal bot to prevent rate-limits
+	if _, err := client.Rest().SetGlobalCommands(client.ApplicationID(), commands.PrepareCommandCreateData()); err != nil {
+		log.Error(fmt.Sprintf("Failed to register commands: %v", err))
+	}
+
 	rulesFolder := "_rules/"
 	config.RulesFolder = rulesFolder
 
-	loadedRules, err := rules.Load(rulesFolder)
+	loadedRules, rulesByName, err := rules.Load(rulesFolder)
 	if err != nil {
 		log.Error(fmt.Sprintf("Failed loading rules: %s", err))
 		return
 	}
 
 	aegisbot.Rules = loadedRules
+	aegisbot.RulesByName = rulesByName
 
 	go func() {
 		watcher, err := fsnotify.NewWatcher()
@@ -82,11 +90,12 @@ func main() {
 				}
 				if event.Has(fsnotify.Write) || event.Has(fsnotify.Create) {
 					log.Info("Changes detected in rules folder, performing hot-reload...")
-					updatedRules, err := rules.Load(rulesFolder)
+					updatedRules, updatedRulesByName, err := rules.Load(rulesFolder)
 					if err != nil {
 						log.Error(fmt.Sprintf("Failed to reload rules: %s", err))
 					} else {
 						aegisbot.Rules = updatedRules
+						aegisbot.RulesByName = updatedRulesByName
 					}
 				}
 			case err, ok := <-watcher.Errors:
