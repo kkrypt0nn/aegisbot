@@ -29,10 +29,9 @@ func (c Get) Handle(event *events.ApplicationCommandInteractionCreate, rulesByNa
 	ruleName := event.SlashCommandInteractionData().String("name")
 	rule, ok := rulesByName[ruleName]
 	if !ok {
-		err := event.CreateMessage(discord.NewMessageCreateBuilder().
-			SetContent(fmt.Sprintf("❌ Rule `%s` does not exist!", ruleName)).
-			SetEphemeral(true).
-			Build(),
+		err := event.CreateMessage(discord.NewMessageCreate().
+			WithContent(fmt.Sprintf("❌ Rule `%s` does not exist!", ruleName)).
+			WithEphemeral(true),
 		)
 		if err != nil {
 			log.Error(fmt.Sprintf("Failed to send response: %v", err))
@@ -57,13 +56,12 @@ func (c Get) Handle(event *events.ApplicationCommandInteractionCreate, rulesByNa
 	description += "\n### Expression\n"
 	description += fmt.Sprintf("```yaml\n%s\n```", rule.RawExpression)
 
-	err := event.CreateMessage(discord.NewMessageCreateBuilder().
+	err := event.CreateMessage(discord.NewMessageCreate().
 		AddEmbeds(discord.NewEmbedBuilder().
 			SetDescription(description).
 			Build(),
 		).
-		SetEphemeral(true).
-		Build(),
+		WithEphemeral(true),
 	)
 	if err != nil {
 		log.Error(fmt.Sprintf("Failed to send response: %v", err))

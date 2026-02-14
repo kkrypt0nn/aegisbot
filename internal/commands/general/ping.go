@@ -26,10 +26,9 @@ func (c Ping) CommandCreateData() discord.SlashCommandCreate {
 }
 
 func (c Ping) Handle(event *events.ApplicationCommandInteractionCreate, _ map[string]*rules.SimplifiedRule) {
-	err := event.CreateMessage(discord.NewMessageCreateBuilder().
-		SetContent("Hi there, I'm ready to watch people trigger your rules!").
-		SetEphemeral(true).
-		Build(),
+	err := event.CreateMessage(discord.NewMessageCreate().
+		WithContent("Hi there, I'm ready to watch people trigger your rules!").
+		WithEphemeral(true),
 	)
 	if err != nil {
 		log.Error(fmt.Sprintf("Failed to send response: %v", err))

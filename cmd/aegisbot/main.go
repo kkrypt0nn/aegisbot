@@ -51,7 +51,7 @@ func main() {
 	aegisbot.Client = client
 
 	// TODO: Make this check for commands before, like I did in my personal bot to prevent rate-limits
-	if _, err := client.Rest().SetGlobalCommands(client.ApplicationID(), commands.PrepareCommandCreateData()); err != nil {
+	if _, err := client.Rest.SetGlobalCommands(client.ApplicationID, commands.PrepareCommandCreateData()); err != nil {
 		log.Error(fmt.Sprintf("Failed to register commands: %v", err))
 	}
 

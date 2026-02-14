@@ -6,7 +6,7 @@ import (
 
 	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/disgo/rest"
-	"github.com/disgoorg/json"
+	"github.com/disgoorg/omit"
 	"github.com/disgoorg/snowflake/v2"
 	"github.com/kkrypt0nn/aegisbot/internal/log"
 	"github.com/kkrypt0nn/aegisbot/internal/template"
@@ -86,7 +86,7 @@ func Execute(action string, client rest.Rest, input *Input) {
 }
 
 func alert(client rest.Rest, channelID snowflake.ID, message string) {
-	_, err := client.CreateMessage(channelID, discord.NewMessageCreateBuilder().SetContent(message).Build())
+	_, err := client.CreateMessage(channelID, discord.NewMessageCreate().WithContent(message))
 	if err != nil {
 		log.Error(fmt.Sprintf("Failed to send alert message: %v", err))
 	}
@@ -128,7 +128,7 @@ func timeout(client rest.Rest, guildID *snowflake.ID, userID snowflake.ID, durat
 
 	until := time.Now().Add(duration)
 	_, err := client.UpdateMember(*guildID, userID, discord.MemberUpdate{
-		CommunicationDisabledUntil: json.NewNullablePtr(until),
+		CommunicationDisabledUntil: omit.New(&until),
 	})
 	if err != nil {
 		log.Error(fmt.Sprintf("Failed to timeout user: %v", err))

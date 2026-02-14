@@ -11,7 +11,7 @@ import (
 )
 
 type Bot struct {
-	Client      bot.Client
+	Client      *bot.Client
 	Config      *Config
 	Rules       []*rules.SimplifiedRule
 	RulesByName map[string]*rules.SimplifiedRule
@@ -43,7 +43,7 @@ func (b *Bot) ProcessRules(ctx *event.Context) {
 
 		log.Info(fmt.Sprintf("Rule matched: %s", rule.Name))
 
-		actions.Execute(string(rule.Action.Type), b.Client.Rest(), &actions.Input{
+		actions.Execute(string(rule.Action.Type), b.Client.Rest, &actions.Input{
 			RuleName: rule.Name,
 
 			GuildID:         ctx.GuildID,
