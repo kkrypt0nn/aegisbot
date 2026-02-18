@@ -8,6 +8,8 @@ import (
 
 	"github.com/google/cel-go/cel"
 	"github.com/google/cel-go/common/types"
+	libtime "github.com/kkrypt0nn/aegisbot/internal/cel/libs/time"
+	"github.com/kkrypt0nn/aegisbot/internal/cel/overloads"
 	"github.com/kkrypt0nn/aegisbot/internal/event"
 	"github.com/kkrypt0nn/aegisbot/proto"
 	"sigs.k8s.io/yaml"
@@ -83,7 +85,7 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 				cel.Types(&proto.Message{}),
 				cel.Variable("message", cel.ObjectType("proto.Message")),
 			)
-		case "member":
+		case "member_join", "member_update":
 			celVars = append(celVars,
 				cel.Types(&proto.Member{}),
 				cel.Variable("member", cel.ObjectType("proto.Member")),
@@ -98,9 +100,11 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 		}
 
 		// Add the custom functions for either the types or as a global function
-		celVars = append(celVars, cel.Function("isBot", isBotOverload))
-		celVars = append(celVars, cel.Function("hasLinks", messageHasLinks))
-		celVars = append(celVars, cel.Function("getLinks", messageGetLinks))
+		celVars = append(celVars, overloads.MemberMethods()...)
+		celVars = append(celVars, overloads.MessageMethods()...)
+
+		// Add the libraries
+		celVars = append(celVars, libtime.Lib())
 
 		env, err := cel.NewEnv(celVars...)
 		if err != nil {
@@ -182,7 +186,7 @@ func (r *SimplifiedRule) Evaluate(ctx *event.Context) (bool, error) {
 	case event.EventMessage:
 		input["message"] = ctx.Message
 		input["member"] = ctx.Member
-	case event.EventMember:
+	case event.EventMemberJoin, event.EventMemberUpdate:
 		input["member"] = ctx.Member
 	}
 

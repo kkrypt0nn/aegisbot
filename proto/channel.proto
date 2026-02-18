@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "github.com/kkrypt0nn/aegisbot/proto;proto";
+
+message Channel {
+  string name = 1;
+  ChannelType type = 2;
+}
+
+// All channel types are the Discord channel types +1
+enum ChannelType {
+  CHANNEL_TYPE_UNSPECIFIED = 0;
+  CHANNEL_TYPE_GUILD_TEXT = 1;
+  CHANNEL_TYPE_DM = 2;
+  CHANNEL_TYPE_GUILD_VOICE = 3;
+  CHANNEL_TYPE_GROUP_DM = 4;
+  CHANNEL_TYPE_GUILD_CATEGORY = 5;
+  CHANNEL_TYPE_GUILD_NEWS = 6;
+  CHANNEL_TYPE_UNUSED_7 = 7;
+  CHANNEL_TYPE_UNUSED_8 = 8;
+  CHANNEL_TYPE_UNUSED_9 = 9;
+  CHANNEL_TYPE_GUILD_NEWS_THREAD = 10;
+  CHANNEL_TYPE_GUILD_PUBLIC_THREAD = 11;
+  CHANNEL_TYPE_GUILD_PRIVATE_THREAD = 12;
+  CHANNEL_TYPE_GUILD_STAGE_VOICE = 13;
+  CHANNEL_TYPE_GUILD_DIRECTORY = 14;
+  CHANNEL_TYPE_GUILD_FORUM = 15;
+  CHANNEL_TYPE_GUILD_MEDIA = 16;
+}

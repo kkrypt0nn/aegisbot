@@ -1,11 +1,15 @@
 syntax = "proto3";
-option go_package = "github.com/kkrypt0nn/aegisbot/proto;proto";
 
 package proto;
 
+import "proto/channel.proto";
 import "proto/member.proto";
+
+option go_package = "github.com/kkrypt0nn/aegisbot/proto;proto";
 
 message Message {
   string content = 1;
   Member author = 2;
+  Channel channel = 3;
+  repeated string mentions = 4;
 }

@@ -1,0 +1,9 @@
+- rule:
+    name: "NewAccounts"
+    meta:
+      event: "message"
+      ignoreBots: true
+    action:
+      type: "alert"
+    expression: |
+      time.since(message.author.created_at) < duration("168h")

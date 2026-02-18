@@ -5,8 +5,9 @@ import "github.com/kkrypt0nn/aegisbot/proto"
 type EventType string
 
 const (
-	EventMessage EventType = "message"
-	EventMember  EventType = "member"
+	EventMessage      EventType = "message"
+	EventMemberJoin   EventType = "member_join"
+	EventMemberUpdate EventType = "member_update"
 )
 
 type Context struct {

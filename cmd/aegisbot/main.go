@@ -37,11 +37,13 @@ func main() {
 	client, err := disgo.New(token, bot.WithGatewayConfigOpts(
 		gateway.WithIntents(
 			gateway.IntentGuildMessages,
+			gateway.IntentDirectMessages,
 			gateway.IntentMessageContent,
 			gateway.IntentGuildMembers,
 		)),
 		bot.WithEventListenerFunc(aegisbot.handleCommand),
 		bot.WithEventListenerFunc(aegisbot.handleMessage),
+		bot.WithEventListenerFunc(aegisbot.handleMemberJoin),
 		bot.WithEventListenerFunc(aegisbot.handleMemberUpdate),
 	)
 	if err != nil {
