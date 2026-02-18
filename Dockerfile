@@ -1,6 +1,6 @@
-FROM debian:bookworm-slim AS base
+FROM debian:trixie-slim AS base
 
-FROM golang:1.26.0-bookworm AS builder
+FROM golang:1.26.0-trixie AS builder
 COPY --from=base / /
 WORKDIR /app
 ADD . /app
