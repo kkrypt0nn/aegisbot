@@ -57,9 +57,8 @@ func (c Get) Handle(event *events.ApplicationCommandInteractionCreate, rulesByNa
 	description += fmt.Sprintf("```yaml\n%s\n```", rule.RawExpression)
 
 	err := event.CreateMessage(discord.NewMessageCreate().
-		AddEmbeds(discord.NewEmbedBuilder().
-			SetDescription(description).
-			Build(),
+		AddEmbeds(discord.NewEmbed().
+			WithDescription(description),
 		).
 		WithEphemeral(true),
 	)
