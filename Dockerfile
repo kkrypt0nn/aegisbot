@@ -1,6 +1,6 @@
 FROM debian:trixie-slim AS base
 
-FROM golang:1.26.1-trixie AS builder
+FROM golang:1.26.2-trixie AS builder
 COPY --from=base / /
 WORKDIR /app
 ADD . /app
