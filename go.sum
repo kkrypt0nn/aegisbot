@@ -32,6 +32,7 @@ github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
 github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/kkrypt0nn/tangra v1.1.0 h1:sJlQKofYissULhbSEr4f3gDeBE4MpeNHFnwT6QJ4SI8=
 github.com/kkrypt0nn/tangra v1.1.0/go.mod h1:4AJhac9+KDSENDuxV9LGArtrHVQBSnKoVU+RvWVlzqo=
+github.com/kkrypt0nn/tangra/v2 v2.0.0/go.mod h1:GeiEpDydSw+Z5tzz+wF5bofnSW0xi8aTmo46hZf9ddM=
 github.com/klauspost/compress v1.18.4 h1:RPhnKRAQ4Fh8zU2FY/6ZFDwTVTxgJ/EMydqSTzE9a2c=
 github.com/klauspost/compress v1.18.4/go.mod h1:R0h/fSBs8DE4ENlcrlib3PsXS61voFxhIs2DeRhCvJ4=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
