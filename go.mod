@@ -6,7 +6,7 @@ require (
 	github.com/disgoorg/disgo v0.19.3
 	github.com/disgoorg/omit v1.0.0
 	github.com/disgoorg/snowflake/v2 v2.0.3
-	github.com/fsnotify/fsnotify v1.9.0
+	github.com/fsnotify/fsnotify v1.10.0
 	github.com/google/cel-go v0.28.0
 	github.com/joho/godotenv v1.5.1
 	github.com/kkrypt0nn/tangra v1.1.0
