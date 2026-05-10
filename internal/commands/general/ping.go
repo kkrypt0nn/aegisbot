@@ -31,7 +31,7 @@ func (c Ping) Handle(event *events.ApplicationCommandInteractionCreate, _ map[st
 		WithEphemeral(true),
 	)
 	if err != nil {
-		log.Error(fmt.Sprintf("Failed to send response: %v", err))
+		log.Errorf("Failed to send response: %v", err)
 	}
 }
 

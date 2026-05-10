@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"os/signal"
 	"strings"
@@ -47,14 +46,14 @@ func main() {
 		bot.WithEventListenerFunc(aegisbot.handleMemberUpdate),
 	)
 	if err != nil {
-		log.Error(fmt.Sprintf("Failed creating Discord session: %s", err))
+		log.Errorf("Failed creating Discord session: %s", err)
 		return
 	}
 	aegisbot.Client = client
 
 	// TODO: Make this check for commands before, like I did in my personal bot to prevent rate-limits
 	if _, err := client.Rest.SetGlobalCommands(client.ApplicationID, commands.PrepareCommandCreateData()); err != nil {
-		log.Error(fmt.Sprintf("Failed to register commands: %v", err))
+		log.Errorf("Failed to register commands: %v", err)
 	}
 
 	rulesFolder := "_rules/"
@@ -62,7 +61,7 @@ func main() {
 
 	loadedRules, rulesByName, err := rules.Load(rulesFolder)
 	if err != nil {
-		log.Error(fmt.Sprintf("Failed loading rules: %s", err))
+		log.Errorf("Failed loading rules: %s", err)
 		return
 	}
 
@@ -72,7 +71,7 @@ func main() {
 	go func() {
 		watcher, err := fsnotify.NewWatcher()
 		if err != nil {
-			log.Error(fmt.Sprintf("Failed creating file watcher: %s", err))
+			log.Errorf("Failed creating file watcher: %s", err)
 			return
 		}
 		defer func() {
@@ -81,7 +80,7 @@ func main() {
 
 		err = watcher.Add(rulesFolder)
 		if err != nil {
-			log.Error(fmt.Sprintf("Failed watching rules folder: %s", err))
+			log.Errorf("Failed watching rules folder: %s", err)
 		}
 
 		for {
@@ -94,7 +93,7 @@ func main() {
 					log.Info("Changes detected in rules folder, performing hot-reload...")
 					updatedRules, updatedRulesByName, err := rules.Load(rulesFolder)
 					if err != nil {
-						log.Error(fmt.Sprintf("Failed to reload rules: %s", err))
+						log.Errorf("Failed to reload rules: %s", err)
 					} else {
 						aegisbot.Rules = updatedRules
 						aegisbot.RulesByName = updatedRulesByName
@@ -104,7 +103,7 @@ func main() {
 				if !ok {
 					return
 				}
-				log.Error(fmt.Sprintf("Watcher error: %s", err))
+				log.Errorf("Watcher error: %s", err)
 			}
 		}
 	}()
@@ -115,11 +114,11 @@ func main() {
 
 	err = client.OpenGateway(context.TODO())
 	if err != nil {
-		log.Error(fmt.Sprintf("Failed opening connection: %s", err))
+		log.Errorf("Failed opening connection: %s", err)
 		return
 	}
 
-	log.Success(fmt.Sprintf("%s (v%s) has successfully started", buildinfo.Name, buildinfo.Version))
+	log.Infof("%s (v%s) has successfully started", buildinfo.Name, buildinfo.Version)
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
