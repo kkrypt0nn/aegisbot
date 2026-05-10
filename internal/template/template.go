@@ -2,7 +2,6 @@ package template
 
 import (
 	"bytes"
-	"fmt"
 	"text/template"
 
 	"github.com/kkrypt0nn/aegisbot/internal/log"
@@ -23,11 +22,11 @@ func Render(tpl string, variables map[string]any, defaultTpl string) string {
 	var buf bytes.Buffer
 	t, err := template.New("template").Parse(tpl)
 	if err != nil {
-		log.Error(fmt.Sprintf("Failed parsing template: %v", err))
+		log.Errorf("Failed parsing template: %v", err)
 		return tpl
 	}
 	if err := t.Execute(&buf, variables); err != nil {
-		log.Error(fmt.Sprintf("Failed executing template: %v", err))
+		log.Errorf("Failed executing template: %v", err)
 		return tpl
 	}
 	return buf.String()

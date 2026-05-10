@@ -9,7 +9,6 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/google/cel-go v0.28.0
 	github.com/joho/godotenv v1.5.1
-	github.com/kkrypt0nn/tangra v1.1.0
 	github.com/kkrypt0nn/tangra/v2 v2.0.0
 	google.golang.org/protobuf v1.36.11
 	sigs.k8s.io/yaml v1.6.0

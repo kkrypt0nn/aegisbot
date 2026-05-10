@@ -34,7 +34,7 @@ func (c Get) Handle(event *events.ApplicationCommandInteractionCreate, rulesByNa
 			WithEphemeral(true),
 		)
 		if err != nil {
-			log.Error(fmt.Sprintf("Failed to send response: %v", err))
+			log.Errorf("Failed to send response: %v", err)
 		}
 		return
 	}
@@ -63,7 +63,7 @@ func (c Get) Handle(event *events.ApplicationCommandInteractionCreate, rulesByNa
 		WithEphemeral(true),
 	)
 	if err != nil {
-		log.Error(fmt.Sprintf("Failed to send response: %v", err))
+		log.Errorf("Failed to send response: %v", err)
 	}
 }
 

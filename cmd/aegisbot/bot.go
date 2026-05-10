@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/disgoorg/disgo/bot"
 	"github.com/kkrypt0nn/aegisbot/internal/actions"
 	"github.com/kkrypt0nn/aegisbot/internal/event"
@@ -41,7 +39,7 @@ func (b *Bot) ProcessRules(ctx *event.Context) {
 			variables[k] = s.Value
 		}
 
-		log.Info(fmt.Sprintf("Rule matched: %s", rule.Name))
+		log.Infof("Rule matched: %s", rule.Name)
 
 		actions.Execute(string(rule.Action.Type), b.Client.Rest, &actions.Input{
 			RuleName: rule.Name,
