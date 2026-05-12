@@ -8,6 +8,13 @@
   ],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "packageRules": [
+    {
+      "matchManagers": ["gomod"],
+      "matchPackageNames": ["github.com/fsnotify/fsnotify"],
+      "allowedVersions": "v1.9.0"
+    }
+  ],
   "rangeStrategy": "pin",
   "rebaseWhen": "conflicted",
   "schedule": ["on friday and saturday"]
