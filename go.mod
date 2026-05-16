@@ -7,7 +7,7 @@ require (
 	github.com/disgoorg/omit v1.0.0
 	github.com/disgoorg/snowflake/v2 v2.0.3
 	github.com/fsnotify/fsnotify v1.9.0
-	github.com/google/cel-go v0.28.0
+	github.com/google/cel-go v0.28.1
 	github.com/joho/godotenv v1.5.1
 	github.com/kkrypt0nn/tangra/v2 v2.0.0
 	google.golang.org/protobuf v1.36.11
@@ -23,6 +23,7 @@ require (
 	github.com/klauspost/compress v1.18.4 // indirect
 	github.com/sasha-s/go-csync v0.0.0-20240107134140-fcbab37b09ad // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
+	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/crypto v0.48.0 // indirect
 	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948 // indirect
 	golang.org/x/sys v0.41.0 // indirect
