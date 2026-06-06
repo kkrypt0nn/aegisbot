@@ -3,7 +3,7 @@ module github.com/kkrypt0nn/aegisbot
 go 1.25.6
 
 require (
-	github.com/disgoorg/disgo v0.19.3
+	github.com/disgoorg/disgo v0.19.5
 	github.com/disgoorg/omit v1.0.0
 	github.com/disgoorg/snowflake/v2 v2.0.3
 	github.com/fsnotify/fsnotify v1.9.0
