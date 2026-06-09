@@ -19,6 +19,7 @@ import (
 type YAMLRule struct {
 	Rule struct {
 		Name       string       `yaml:"name"`
+		Disabled   bool         `yaml:"disabled"`
 		Meta       RuleMeta     `yaml:"meta"`
 		Strings    []RuleString `yaml:"strings"`
 		Expression string       `yaml:"expression"`
@@ -47,6 +48,7 @@ type RuleAction struct {
 
 type SimplifiedRule struct {
 	Name       string
+	Disabled   bool
 	Event      event.EventType
 	IgnoreBots bool
 
@@ -124,6 +126,7 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 
 		rule := &SimplifiedRule{
 			Name:       yamlRule.Rule.Name,
+			Disabled:   yamlRule.Rule.Disabled,
 			Event:      yamlRule.Rule.Meta.Event,
 			IgnoreBots: yamlRule.Rule.Meta.IgnoreBots,
 
@@ -175,6 +178,9 @@ func Load(dir string) ([]*SimplifiedRule, map[string]*SimplifiedRule, error) {
 }
 
 func (r *SimplifiedRule) Evaluate(ctx *event.Context) (bool, error) {
+	if r.Disabled {
+		return false, nil
+	}
 	if r.Event != ctx.Type {
 		return false, nil
 	}
