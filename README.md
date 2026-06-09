@@ -46,8 +46,12 @@ Coming soon!
 
 Aegisbot will (hopefully) support:
 
+### Soon*ish*
+
 - Pre-defined matches, like those weird and spammy characters
 - Rule tags
+
+### Long-term
 - Scanning of messages, user profiles, rate of messages, etc.
 - A GUI
   - To add, remove, deactivate and edit the rules
