@@ -33,7 +33,7 @@ area/docker:
   - changed-files:
       - any-glob-to-any-file:
           - Dockerfile
-          - docker-compose.yml
+          - docker-compose.yaml
 
 area/dependencies:
   - changed-files:

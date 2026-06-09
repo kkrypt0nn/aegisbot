@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - ".github/labels.yml"
+      - ".github/labels.yaml"
 
 permissions:
   issues: write
@@ -22,5 +22,5 @@ jobs:
       - name: Sync Labels
         uses: EndBug/label-sync@52074158190acb45f3077f9099fea818aa43f97a # v2.3.3
         with:
-          config-file: .github/labels.yml
+          config-file: .github/labels.yaml
           delete-other-labels: true

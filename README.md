@@ -1,6 +1,6 @@
 # Aegisbot
 
-[![CI Badge](https://github.com/kkrypt0nn/aegisbot/actions/workflows/ci.yml/badge.svg)](https://github.com/kkrypt0nn/aegisbot/actions)
+[![CI Badge](https://github.com/kkrypt0nn/aegisbot/actions/workflows/ci.yaml/badge.svg)](https://github.com/kkrypt0nn/aegisbot/actions)
 [![Discord Server Badge](https://img.shields.io/discord/1358456011316396295?logo=discord)](https://discord.gg/xj6y5ZaTMr)
 [![Last Commit Badge](https://img.shields.io/github/last-commit/kkrypt0nn/aegisbot)](https://github.com/kkrypt0nn/aegisbot/commits/main)
 [![Conventional Commits Badge](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org/en/v1.0.0/)
