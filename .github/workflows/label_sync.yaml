@@ -14,4 +14,4 @@ permissions:
 
 jobs:
   label_sync:
-    uses: kkrypt0nn/actions/.github/workflows/label_sync.yaml@4370b5407f227731cd795ae57ba6336ef6dc777c # v0.1.0
+    uses: kkrypt0nn/actions/.github/workflows/label_sync.yaml@f87e74587c75a99d661e5966fc41552d106a3712 # v0.1.1
