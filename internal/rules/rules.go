@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/cel-go/cel"
 	"github.com/google/cel-go/common/types"
+	"github.com/kkrypt0nn/aegisbot/internal/actions"
 	libtime "github.com/kkrypt0nn/aegisbot/internal/cel/libs/time"
 	"github.com/kkrypt0nn/aegisbot/internal/cel/overloads"
 	"github.com/kkrypt0nn/aegisbot/internal/event"
@@ -26,8 +27,8 @@ type YAMLRule struct {
 }
 
 type RuleMeta struct {
-	Event      string `yaml:"event"`
-	IgnoreBots bool   `yaml:"ignoreBots"`
+	Event      event.EventType `yaml:"event"`
+	IgnoreBots bool            `yaml:"ignoreBots"`
 }
 
 type RuleString struct {
@@ -36,7 +37,7 @@ type RuleString struct {
 }
 
 type RuleAction struct {
-	Type event.EventType `yaml:"type"`
+	Type actions.ActionType `yaml:"type"`
 
 	// Optional fields depending on the action
 	MessageTemplate string `yaml:"messageTemplate,omitempty"`
@@ -46,7 +47,7 @@ type RuleAction struct {
 
 type SimplifiedRule struct {
 	Name       string
-	Event      string
+	Event      event.EventType
 	IgnoreBots bool
 
 	Strings map[string]RuleString
@@ -174,7 +175,7 @@ func Load(dir string) ([]*SimplifiedRule, map[string]*SimplifiedRule, error) {
 }
 
 func (r *SimplifiedRule) Evaluate(ctx *event.Context) (bool, error) {
-	if r.Event != string(ctx.Type) {
+	if r.Event != ctx.Type {
 		return false, nil
 	}
 	if r.IgnoreBots && ctx.Member != nil && ctx.Member.Bot {

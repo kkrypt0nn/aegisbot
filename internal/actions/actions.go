@@ -11,6 +11,16 @@ import (
 	"github.com/kkrypt0nn/aegisbot/internal/template"
 )
 
+type ActionType string
+
+const (
+	ActionAlert   ActionType = "alert"
+	ActionBan     ActionType = "ban"
+	ActionDelete  ActionType = "delete"
+	ActionKick    ActionType = "kick"
+	ActionTimeout ActionType = "timeout"
+)
+
 type Input struct {
 	RuleName string
 
@@ -25,9 +35,9 @@ type Input struct {
 	Variables map[string]any
 }
 
-func Execute(action string, client rest.Rest, input *Input) {
+func Execute(action ActionType, client rest.Rest, input *Input) {
 	switch action {
-	case "alert":
+	case ActionAlert:
 		alert(client,
 			snowflake.MustParse(input.ChannelID),
 			template.Render(
@@ -37,7 +47,7 @@ func Execute(action string, client rest.Rest, input *Input) {
 			),
 		)
 
-	case "ban":
+	case ActionBan:
 		ban(client,
 			parseSnowflakePtr(input.GuildID),
 			snowflake.MustParse(input.UserID),
@@ -48,14 +58,14 @@ func Execute(action string, client rest.Rest, input *Input) {
 			),
 		)
 
-	case "delete":
+	case ActionDelete:
 		deleteMessage(
 			client,
 			snowflake.MustParse(input.ChannelID),
 			snowflake.MustParse(input.MessageID),
 		)
 
-	case "kick":
+	case ActionKick:
 		kick(
 			client,
 			parseSnowflakePtr(input.GuildID),
@@ -67,7 +77,7 @@ func Execute(action string, client rest.Rest, input *Input) {
 			),
 		)
 
-	case "timeout":
+	case ActionTimeout:
 		duration := input.Duration
 		if duration == 0 {
 			duration = 10 * time.Minute

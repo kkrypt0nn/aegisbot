@@ -41,7 +41,7 @@ func (b *Bot) ProcessRules(ctx *event.Context) {
 
 		log.Infof("Rule matched: %s", rule.Name)
 
-		actions.Execute(string(rule.Action.Type), b.Client.Rest, &actions.Input{
+		actions.Execute(rule.Action.Type, b.Client.Rest, &actions.Input{
 			RuleName: rule.Name,
 
 			GuildID:         ctx.GuildID,
