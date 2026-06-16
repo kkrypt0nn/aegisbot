@@ -22,15 +22,17 @@ const (
 )
 
 type Input struct {
-	RuleName string
+	// Same as the variables, but for cleaner use in the code
+	RuleName  string
+	GuildID   string
+	ChannelID string
+	MessageID string
+	UserID    string
 
-	GuildID         string
-	ChannelID       string
-	MessageID       string
-	UserID          string
-	Duration        time.Duration
-	Reason          string
-	MessageTemplate string
+	AlertChannelID  string
+	AlertMessage    string
+	TimeoutDuration time.Duration
+	BanKickReason   string
 
 	Variables map[string]any
 }
@@ -38,10 +40,14 @@ type Input struct {
 func Execute(action ActionType, client rest.Rest, input *Input) {
 	switch action {
 	case ActionAlert:
+		channelId := input.AlertChannelID
+		if channelId == "" {
+			channelId = input.ChannelID
+		}
 		alert(client,
-			snowflake.MustParse(input.ChannelID),
+			snowflake.MustParse(channelId),
 			template.Render(
-				input.MessageTemplate,
+				input.AlertMessage,
 				input.Variables,
 				template.DefaultAlert,
 			),
@@ -52,7 +58,7 @@ func Execute(action ActionType, client rest.Rest, input *Input) {
 			parseSnowflakePtr(input.GuildID),
 			snowflake.MustParse(input.UserID),
 			template.Render(
-				input.Reason,
+				input.BanKickReason,
 				input.Variables,
 				template.DefaultBan,
 			),
@@ -71,14 +77,14 @@ func Execute(action ActionType, client rest.Rest, input *Input) {
 			parseSnowflakePtr(input.GuildID),
 			snowflake.MustParse(input.UserID),
 			template.Render(
-				input.Reason,
+				input.BanKickReason,
 				input.Variables,
 				template.DefaultKick,
 			),
 		)
 
 	case ActionTimeout:
-		duration := input.Duration
+		duration := input.TimeoutDuration
 		if duration == 0 {
 			duration = 10 * time.Minute
 		}

@@ -4,7 +4,7 @@ The website serves as the central hub for information about the bot.
 
 ## Getting Started
 
-The website is available at https://aegisbot.krypton.ninja. You can access the documentation of the project and the graph view (**beta**).
+The website is available at https://aegisbot.krypton.ninja. You can access the documentation of the project.
 
 ## Documentation
 

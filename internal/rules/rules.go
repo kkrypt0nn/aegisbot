@@ -23,7 +23,7 @@ type YAMLRule struct {
 		Meta       RuleMeta     `yaml:"meta"`
 		Strings    []RuleString `yaml:"strings"`
 		Expression string       `yaml:"expression"`
-		Actions    []RuleAction `yaml:"action"`
+		Actions    []RuleAction `yaml:"actions"`
 	} `yaml:"rule"`
 }
 
@@ -41,9 +41,10 @@ type RuleAction struct {
 	Type actions.ActionType `yaml:"type"`
 
 	// Optional fields depending on the action
-	MessageTemplate string `yaml:"messageTemplate,omitempty"`
-	Duration        string `yaml:"duration,omitempty"`
-	Reason          string `yaml:"reason,omitempty"`
+	ChannelID string `yaml:"channelId,omitempty"`
+	Message   string `yaml:"message,omitempty"`
+	Duration  string `yaml:"duration,omitempty"`
+	Reason    string `yaml:"reason,omitempty"`
 }
 
 type SimplifiedRule struct {
@@ -83,12 +84,13 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 
 		// Add the variables depending on the context
 		switch yamlRule.Rule.Meta.Event {
-		case "message":
+		case event.EventMessageCreate, event.EventMessageUpdate:
 			celVars = append(celVars,
-				cel.Types(&proto.Message{}),
+				cel.Types(&proto.Member{}, &proto.Message{}),
+				cel.Variable("author", cel.ObjectType("proto.Member")),
 				cel.Variable("message", cel.ObjectType("proto.Message")),
 			)
-		case "member_join", "member_update":
+		case event.EventMemberJoin, event.EventMemberUpdate:
 			celVars = append(celVars,
 				cel.Types(&proto.Member{}),
 				cel.Variable("member", cel.ObjectType("proto.Member")),
@@ -184,15 +186,15 @@ func (r *SimplifiedRule) Evaluate(ctx *event.Context) (bool, error) {
 	if r.Event != ctx.Type {
 		return false, nil
 	}
-	if r.IgnoreBots && ctx.Member != nil && ctx.Member.Bot {
+	if r.IgnoreBots && ctx.Bot {
 		return false, nil
 	}
 
 	input := map[string]any{}
 	switch ctx.Type {
-	case event.EventMessage:
+	case event.EventMessageCreate, event.EventMessageUpdate:
+		input["author"] = ctx.Message.Author
 		input["message"] = ctx.Message
-		input["member"] = ctx.Member
 	case event.EventMemberJoin, event.EventMemberUpdate:
 		input["member"] = ctx.Member
 	}

@@ -1,6 +1,6 @@
 module github.com/kkrypt0nn/aegisbot
 
-go 1.25.6
+go 1.26.4
 
 require (
 	github.com/disgoorg/disgo v0.19.5

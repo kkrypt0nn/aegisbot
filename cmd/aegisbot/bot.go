@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/disgoorg/disgo/bot"
 	"github.com/kkrypt0nn/aegisbot/internal/actions"
 	"github.com/kkrypt0nn/aegisbot/internal/event"
@@ -42,15 +44,32 @@ func (b *Bot) ProcessRules(ctx *event.Context) {
 		log.Infof("Rule matched: %s", rule.Name)
 
 		for _, action := range rule.Actions {
-			actions.Execute(action.Type, b.Client.Rest, &actions.Input{
-				RuleName: rule.Name,
+			var timeoutDuration time.Duration
+			if action.Duration != "" {
+				duration, err := time.ParseDuration(action.Duration)
+				if err != nil {
+					log.Warnf(
+						"Invalid duration (%s) for rule %s: %v",
+						action.Duration,
+						rule.Name,
+						err,
+					)
+				} else {
+					timeoutDuration = duration
+				}
+			}
 
-				GuildID:         ctx.GuildID,
-				ChannelID:       ctx.ChannelID,
-				MessageID:       ctx.MessageID,
-				UserID:          ctx.UserID,
-				Reason:          action.Reason,
-				MessageTemplate: action.MessageTemplate,
+			actions.Execute(action.Type, b.Client.Rest, &actions.Input{
+				RuleName:  rule.Name,
+				GuildID:   ctx.GuildID,
+				ChannelID: ctx.ChannelID,
+				MessageID: ctx.MessageID,
+				UserID:    ctx.UserID,
+
+				AlertChannelID:  action.ChannelID,
+				AlertMessage:    action.Message,
+				BanKickReason:   action.Reason,
+				TimeoutDuration: timeoutDuration,
 
 				Variables: variables,
 			})

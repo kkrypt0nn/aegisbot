@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package proto;
 
+import "proto/attachment.proto";
 import "proto/channel.proto";
 import "proto/member.proto";
 
@@ -12,4 +13,5 @@ message Message {
   Member author = 2;
   Channel channel = 3;
   repeated string mentions = 4;
+  repeated Attachment attachments = 5;
 }

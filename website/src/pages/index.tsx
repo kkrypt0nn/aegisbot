@@ -26,17 +26,15 @@ export default function Home() {
               <strong>🛡️ Pattern-match your Discord and Twitch defense </strong>
             </p>
             <p>
-              Aegisbot is a novel Discord and Twitch bot with{" "}
-              <b>advanced pattern-matching auto-moderation</b>, built on
-              concepts inspired by{" "}
-              <a href="https://virustotal.github.io/yara/">YARA</a> - not just
-              yet another "auto-mod" clone.
+              Aegisbot is a novel Discord bot with{" "}
+              <b>CEL-based auto-moderation </b> - not just yet another
+              "auto-mod" clone.
             </p>
             <p>
               It allows for fine-grained detection of malicious, spammy, or
               unwanted behavior using customizable matching rules written in a
-              simple and common syntax such as YAML or JSON, rather than static
-              keyword lists or simplistic triggers.
+              simple and common syntax such as YAML, rather than static keyword
+              lists or simplistic triggers.
             </p>
             <p>More features are in development.</p>
             <div className="margin-bottom--xl">

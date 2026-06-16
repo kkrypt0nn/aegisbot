@@ -10,4 +10,5 @@ message Member {
   string username = 1;
   bool bot = 2;
   google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp joined_at = 4;
 }

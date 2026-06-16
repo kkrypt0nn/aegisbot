@@ -8,8 +8,7 @@ import (
 )
 
 const (
-	// Yes, this is hard-coded and for now and I'm fine with it...
-	DefaultAlert = "<@&861907005386915870> ⚠️ Rule `{{.RuleName}}` matched and triggered by <@{{.UserID}}>"
+	DefaultAlert = "⚠️ Rule '{{.RuleName}}' matched and triggered by <@{{.UserID}}>"
 	DefaultBan   = "Matched rule '{{.RuleName}}', action=ban"
 	DefaultKick  = "Matched rule '{{.RuleName}}', action=kick"
 )

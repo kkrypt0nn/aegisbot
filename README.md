@@ -10,10 +10,10 @@
 > I strongly advise **not** using it until a stable release is published.
 > **Contributions (especially the creation of rules) and feedback are welcome and appreciated once the core is complete.**
 
-### 🛡️ Pattern-match your Discord and Twitch defense
+### 🛡️ CEL-based Discord defense
 
-Aegisbot is a novel Discord and Twitch bot with **advanced pattern-matching auto-moderation**, built on concepts inspired by [YARA](https://virustotal.github.io/yara/) - not just yet another "auto-mod" clone.
-It allows for fine-grained detection of malicious, spammy, or unwanted behavior using customizable matching rules written in a simple and common syntax such as YAML or JSON, rather than static keyword lists or simplistic triggers.
+Aegisbot is a novel Discord bot with **CEL-based auto-moderation** - not just yet another "auto-mod" clone.
+It allows for fine-grained detection of malicious, spammy, or unwanted behavior using customizable matching rules written in a simple and common syntax such as YAML, rather than static keyword lists or simplistic triggers.
 
 Huge thanks to [@evilsocket](https://github.com/evilsocket) for giving this bot idea.
 
@@ -27,7 +27,7 @@ For now, feel free to watch the repository or join the [Discord server](https://
 
 ### Prerequisites
 
-- Go ≥ 1.25.6
+- Go ≥ 1.26.4
 - A Discord bot token
 
 ### Run Locally
@@ -65,10 +65,11 @@ Currently a rule may look like
 - rule:
     name: "CryptoScamPictures"
     meta:
-      event: "message"
+      event: "message_create"
       ignoreBots: true
-    action:
-      type: "alert"
+    actions:
+      - type: "timeout"
+        duration: "6h"
     expression: |
       message.getLinks().size() == 4 &&
       message.getLinks().all(l,
@@ -82,7 +83,7 @@ Currently a rule may look like
 
 ## Documentation
 
-Coming soon! Once the base rule engine and at least the Discord integrations are complete, a documentation will be hosted in the `website/docs/` folder and on a documentation website.
+The documentation is available at https://aegisbot.krypton.ninja
 
 ## Troubleshooting
 

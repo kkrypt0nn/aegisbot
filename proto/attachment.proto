@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "github.com/kkrypt0nn/aegisbot/proto;proto";
+
+message Attachment {
+  string filename = 1;
+  string url = 2;
+}

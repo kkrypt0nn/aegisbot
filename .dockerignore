@@ -1,6 +1,5 @@
-/.git
-/.github
-/dist
+.git/
+.github/
+dist/
 Dockerfile
-renovate.json
-/website
+website/

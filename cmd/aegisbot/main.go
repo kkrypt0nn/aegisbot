@@ -23,6 +23,12 @@ func main() {
 
 	token := os.Getenv("BOT_TOKEN")
 
+	rulesFolder := "_rules/"
+	rulesFolderEnv := os.Getenv("RULES_FOLDER")
+	if rulesFolderEnv != "" {
+		rulesFolder = rulesFolderEnv
+	}
+
 	config := &Config{}
 	aegisbot := &Bot{
 		Config: config,
@@ -42,6 +48,7 @@ func main() {
 		)),
 		bot.WithEventListenerFunc(aegisbot.handleCommand),
 		bot.WithEventListenerFunc(aegisbot.handleMessage),
+		bot.WithEventListenerFunc(aegisbot.handleMessageUpdate),
 		bot.WithEventListenerFunc(aegisbot.handleMemberJoin),
 		bot.WithEventListenerFunc(aegisbot.handleMemberUpdate),
 	)
@@ -56,7 +63,6 @@ func main() {
 		log.Errorf("Failed to register commands: %v", err)
 	}
 
-	rulesFolder := "_rules/"
 	config.RulesFolder = rulesFolder
 
 	loadedRules, rulesByName, err := rules.Load(rulesFolder)
