@@ -17,10 +17,10 @@ Based on the action that will be taken, you can pass in the following additional
 
 ### `alert`
 
-| Parameter   | Description                                                        | Default                                                           |
-| ----------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| `channelId` | The channel ID where the message will be sent                      | _Channel ID where the trigger occured_                            |
-| `message`   | The message that will be sent, supports [templating](./templating) | `⚠️ Rule '{{.RuleName}}' matched and triggered by <@{{.UserID}}>` |
+| Parameter   | Description                                                                  | Default                                                           |
+| ----------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `channelId` | The channel ID where the message will be sent                                | _Channel ID where the trigger occured_                            |
+| `message`   | The message that will be sent, supports [templating](/docs/rules/templating) | `⚠️ Rule '{{.RuleName}}' matched and triggered by <@{{.UserID}}>` |
 
 ### `timeout`
 
@@ -30,12 +30,12 @@ Based on the action that will be taken, you can pass in the following additional
 
 ### `ban`
 
-| Parameter | Description                                                        | Default                                     |
-| --------- | ------------------------------------------------------------------ | ------------------------------------------- |
-| `reason`  | The reason that will be given, supports [templating](./templating) | `Matched rule '{{.RuleName}}', action=ban` |
+| Parameter | Description                                                                  | Default                                    |
+| --------- | ---------------------------------------------------------------------------- | ------------------------------------------ |
+| `reason`  | The reason that will be given, supports [templating](/docs/rules/templating) | `Matched rule '{{.RuleName}}', action=ban` |
 
 ### `kick`
 
-| Parameter | Description                                                        | Default                                     |
-| --------- | ------------------------------------------------------------------ | ------------------------------------------- |
-| `reason`  | The reason that will be given, supports [templating](./templating) | `Matched rule '{{.RuleName}}', action=kick` |
+| Parameter | Description                                                                  | Default                                     |
+| --------- | ---------------------------------------------------------------------------- | ------------------------------------------- |
+| `reason`  | The reason that will be given, supports [templating](/docs/rules/templating) | `Matched rule '{{.RuleName}}', action=kick` |
