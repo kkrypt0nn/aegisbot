@@ -23,7 +23,7 @@ type YAMLRule struct {
 		Meta       RuleMeta     `yaml:"meta"`
 		Strings    []RuleString `yaml:"strings"`
 		Expression string       `yaml:"expression"`
-		Action     RuleAction   `yaml:"action"`
+		Actions    []RuleAction `yaml:"action"`
 	} `yaml:"rule"`
 }
 
@@ -55,7 +55,7 @@ type SimplifiedRule struct {
 	Strings map[string]RuleString
 	Program cel.Program
 
-	Action RuleAction
+	Actions []RuleAction
 
 	RawExpression string
 }
@@ -132,7 +132,7 @@ func Parse(filePath string) ([]*SimplifiedRule, error) {
 
 			Strings: stringsMap,
 			Program: program,
-			Action:  yamlRule.Rule.Action,
+			Actions: yamlRule.Rule.Actions,
 
 			RawExpression: yamlRule.Rule.Expression,
 		}

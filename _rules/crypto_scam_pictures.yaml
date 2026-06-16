@@ -3,8 +3,8 @@
     meta:
       event: "message"
       ignoreBots: true
-    action:
-      type: "alert"
+    actions:
+      - type: "alert"
     expression: |
       message.getLinks().size() == 4 &&
       message.getLinks().all(l,

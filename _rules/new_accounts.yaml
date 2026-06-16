@@ -3,7 +3,7 @@
     meta:
       event: "member_join"
       ignoreBots: true
-    action:
-      type: "alert"
+    actions:
+      - type: "alert"
     expression: |
       time.since(member.created_at) < duration("168h")

@@ -2,6 +2,7 @@ package cmdrules
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/disgo/events"
@@ -43,7 +44,12 @@ func (c Get) Handle(event *events.ApplicationCommandInteractionCreate, rulesByNa
 	description += fmt.Sprintf("- **Name**: %s\n", rule.Name)
 	description += fmt.Sprintf("- **Event**: %s\n", rule.Event)
 	description += fmt.Sprintf("- **Ignore bots**: %s\n", fmt.Sprintf("%v", rule.IgnoreBots))
-	description += fmt.Sprintf("- **Action**: %s\n", string(rule.Action.Type))
+
+	actionTypes := make([]string, 0, len(rule.Actions))
+	for _, action := range rule.Actions {
+		actionTypes = append(actionTypes, string(action.Type))
+	}
+	description += fmt.Sprintf("- **Actions**: %s\n", strings.Join(actionTypes, ","))
 
 	description += "\n### Strings\n"
 

@@ -41,17 +41,19 @@ func (b *Bot) ProcessRules(ctx *event.Context) {
 
 		log.Infof("Rule matched: %s", rule.Name)
 
-		actions.Execute(rule.Action.Type, b.Client.Rest, &actions.Input{
-			RuleName: rule.Name,
+		for _, action := range rule.Actions {
+			actions.Execute(action.Type, b.Client.Rest, &actions.Input{
+				RuleName: rule.Name,
 
-			GuildID:         ctx.GuildID,
-			ChannelID:       ctx.ChannelID,
-			MessageID:       ctx.MessageID,
-			UserID:          ctx.UserID,
-			Reason:          rule.Action.Reason,
-			MessageTemplate: rule.Action.MessageTemplate,
+				GuildID:         ctx.GuildID,
+				ChannelID:       ctx.ChannelID,
+				MessageID:       ctx.MessageID,
+				UserID:          ctx.UserID,
+				Reason:          action.Reason,
+				MessageTemplate: action.MessageTemplate,
 
-			Variables: variables,
-		})
+				Variables: variables,
+			})
+		}
 	}
 }
