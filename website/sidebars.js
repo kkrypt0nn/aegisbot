@@ -21,6 +21,17 @@ const sidebars = {
       ],
       collapsed: false,
     },
+    {
+      type: "category",
+      label: "Objects",
+      items: [
+        "objects/attachment",
+        "objects/channel",
+        "objects/member",
+        "objects/message",
+      ],
+      collapsed: true,
+    },
   ],
 };
 
