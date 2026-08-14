@@ -7,7 +7,7 @@ require (
 	github.com/disgoorg/omit v1.0.0
 	github.com/disgoorg/snowflake/v2 v2.0.3
 	github.com/fsnotify/fsnotify v1.9.0
-	github.com/google/cel-go v0.30.0
+	github.com/google/cel-go v0.31.0
 	github.com/joho/godotenv v1.5.1
 	github.com/kkrypt0nn/tangra/v2 v2.1.0
 	google.golang.org/protobuf v1.36.11
