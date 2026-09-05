@@ -3,11 +3,11 @@ module github.com/kkrypt0nn/aegisbot
 go 1.26.4
 
 require (
+	cel.dev/cel-go v0.32.0
 	github.com/disgoorg/disgo v0.19.6
 	github.com/disgoorg/omit v1.0.0
 	github.com/disgoorg/snowflake/v2 v2.0.3
 	github.com/fsnotify/fsnotify v1.9.0
-	github.com/google/cel-go v0.32.0
 	github.com/joho/godotenv v1.5.1
 	github.com/kkrypt0nn/tangra/v2 v2.1.0
 	google.golang.org/protobuf v1.36.12
