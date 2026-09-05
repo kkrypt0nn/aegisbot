@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/google/cel-go/cel"
-	"github.com/google/cel-go/common/types"
+	"cel.dev/cel-go/cel"
+	"cel.dev/cel-go/common/types"
 	"github.com/kkrypt0nn/aegisbot/internal/actions"
 	libtime "github.com/kkrypt0nn/aegisbot/internal/cel/libs/time"
 	"github.com/kkrypt0nn/aegisbot/internal/cel/overloads"
