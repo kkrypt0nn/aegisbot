@@ -12,4 +12,4 @@ permissions:
 
 jobs:
   labeler:
-    uses: kkrypt0nn/actions/.github/workflows/labeler.yaml@f87e74587c75a99d661e5966fc41552d106a3712 # v0.1.1
+    uses: kkrypt0nn/actions/.github/workflows/labeler.yaml@764909eeff7c880e26da91d6f31a208fdb45d57b # v0.2.0
